@@ -88,4 +88,13 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext(List.of("P", "E", "R", "S", "O", "N"))
                 .verifyComplete();
     }
+
+    @Test
+    void namesMonoFlatMapMany() {
+        Flux<String> namesMono = fluxAndMonoGeneratorService.namesMonoFlatMapMany();
+
+        StepVerifier.create(namesMono)
+                .expectNext("P", "E", "R", "S", "O", "N")
+                .verifyComplete();
+    }
 }

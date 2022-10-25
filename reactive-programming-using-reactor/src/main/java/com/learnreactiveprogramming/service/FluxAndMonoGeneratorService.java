@@ -91,4 +91,11 @@ public class FluxAndMonoGeneratorService {
         return Mono.just(List.of(charArray));
 
     }
+
+    public Flux<String> namesMonoFlatMapMany() {
+        return Mono.just("Person")
+                .map(String::toUpperCase)
+                .flatMapMany(this::splitString)
+                .log();
+    }
 }
