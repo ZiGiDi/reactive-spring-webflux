@@ -78,4 +78,17 @@ public class FluxAndMonoGeneratorService {
         return Flux.fromArray(splitArray)
                 .delayElements(Duration.ofMillis(delay));
     }
+
+    public Mono<List<String>> namesMonoFlatMap() {
+        return Mono.just("Person")
+                .map(String::toUpperCase)
+                .flatMap(this::splitStringMono)
+                .log();
+    }
+
+    private Mono<List<String>> splitStringMono(String name) {
+        String[] charArray = name.split("");
+        return Mono.just(List.of(charArray));
+
+    }
 }
