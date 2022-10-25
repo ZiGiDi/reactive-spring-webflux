@@ -43,4 +43,16 @@ public class FluxAndMonoGeneratorService {
                 .map(name -> name.length() + "-" + name)
                 .log();
     }
+
+    public Flux<String> namesFluxFlatMap(int stringLength) {
+        return Flux.fromIterable(List.of("bob", "don", "john", "chloe"))
+                .filter(name -> name.length() > stringLength)
+                .flatMap(this::splitString)
+                .log();
+    }
+
+    private Flux<String> splitString(String name) {
+        String[] splitArray = name.split("");
+        return Flux.fromArray(splitArray);
+    }
 }
