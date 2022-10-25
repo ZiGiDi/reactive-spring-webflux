@@ -65,6 +65,13 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Flux<String> namesFluxFlatConcatMapAsync(int stringLength) {
+        return Flux.fromIterable(List.of("bob", "don", "john", "chloe"))
+                .filter(name -> name.length() > stringLength)
+                .concatMap(this::splitStringWithDelay) //use when ordering matters
+                .log();
+    }
+
     private Flux<String> splitStringWithDelay(String name) {
         String[] splitArray = name.split("");
         int delay = new Random().nextInt(1000);
