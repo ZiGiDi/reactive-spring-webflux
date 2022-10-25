@@ -97,4 +97,14 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("P", "E", "R", "S", "O", "N")
                 .verifyComplete();
     }
+
+    @Test
+    void namesFluxTransform() {
+        var namesFlux = fluxAndMonoGeneratorService.namesFluxTransform(3);
+
+        StepVerifier.create(namesFlux)
+                .expectNext("j", "o", "h", "n")
+                .expectNextCount(5)
+                .verifyComplete();
+    }
 }
