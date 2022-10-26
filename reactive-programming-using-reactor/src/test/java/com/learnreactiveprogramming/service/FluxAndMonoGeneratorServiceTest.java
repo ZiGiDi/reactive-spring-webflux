@@ -7,8 +7,6 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class FluxAndMonoGeneratorServiceTest {
     FluxAndMonoGeneratorService fluxAndMonoGeneratorService = new FluxAndMonoGeneratorService();
 
@@ -72,7 +70,7 @@ class FluxAndMonoGeneratorServiceTest {
 
     @Test
     void namesFluxFlatConcatMapAsync() {
-        var namesFlux = fluxAndMonoGeneratorService.namesFluxFlatMapAsync(3);
+        var namesFlux = fluxAndMonoGeneratorService.namesFluxFlatConcatMapAsync(3);
 
         StepVerifier.create(namesFlux)
                 .expectNext("j", "o", "h", "n")
@@ -168,6 +166,42 @@ class FluxAndMonoGeneratorServiceTest {
 
         StepVerifier.create(concat)
                 .expectNext("A", "B", "C", "D", "E", "F")
+                .verifyComplete();
+    }
+
+    @Test
+    void exploreMergeZip() {
+        Flux<String> concat = fluxAndMonoGeneratorService.exploreZip();
+
+        StepVerifier.create(concat)
+                .expectNext("AD", "BE", "CF")
+                .verifyComplete();
+    }
+
+    @Test
+    void exploreMergeZipWithTuple() {
+        Flux<String> concat = fluxAndMonoGeneratorService.exploreZipWithTuple();
+
+        StepVerifier.create(concat)
+                .expectNext("AD14", "BE25", "CF36")
+                .verifyComplete();
+    }
+
+    @Test
+    void exploreZipWith() {
+        Flux<String> concat = fluxAndMonoGeneratorService.exploreZipWith();
+
+        StepVerifier.create(concat)
+                .expectNext("AD", "BE", "CF")
+                .verifyComplete();
+    }
+
+    @Test
+    void exploreZipMono() {
+        Mono<String> zip = fluxAndMonoGeneratorService.exploreZipMono();
+
+        StepVerifier.create(zip)
+                .expectNext("AB")
                 .verifyComplete();
     }
 }
