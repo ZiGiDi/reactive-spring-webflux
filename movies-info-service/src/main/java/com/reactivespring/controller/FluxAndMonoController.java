@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @RestController
-public class FuxAndMonoController {
+public class FluxAndMonoController {
 
     @GetMapping("/flux")
     public Flux<Integer> flux() {
