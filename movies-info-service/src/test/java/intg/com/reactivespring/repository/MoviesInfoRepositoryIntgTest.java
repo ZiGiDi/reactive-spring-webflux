@@ -12,6 +12,9 @@ import reactor.test.StepVerifier;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @DataMongoTest
 @ActiveProfiles("test")
 public class MoviesInfoRepositoryIntgTest {
@@ -40,13 +43,65 @@ public class MoviesInfoRepositoryIntgTest {
     }
 
     @Test
-    void  findAll(){
-       var moviesInfoFlux = movieInfoRepository.findAll()
-               .log();
+    void findAll() {
+        var moviesInfoFlux = movieInfoRepository.findAll()
+                .log();
 
         StepVerifier.create(moviesInfoFlux)
                 .expectNextCount(3)
                 .verifyComplete();
     }
 
+    @Test
+    void findById() {
+        var moviesInfoMono = movieInfoRepository.findById("abc")
+                .log();
+
+        StepVerifier.create(moviesInfoMono)
+                .assertNext(movieInfo -> assertEquals("Dark Knight Rises", movieInfo.getName()))
+                .verifyComplete();
+    }
+
+    @Test
+    void saveMovieInfo() {
+        var movieInfo = new MovieInfo(null, "Batman Begins1",
+                2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+
+        var moviesInfoMono = movieInfoRepository.save(movieInfo)
+                .log();
+
+        StepVerifier.create(moviesInfoMono)
+                .assertNext(result -> {
+                    assertEquals("Batman Begins1", result.getName());
+                    assertNotNull(result.getMovieInfoId());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void updateMovieInfo() {
+        var moviesInfo = movieInfoRepository.findById("abc")
+                .block();
+        moviesInfo.setYear(2021);
+
+        var moviesInfoMono = movieInfoRepository.save(moviesInfo)
+                .log();
+
+        StepVerifier.create(moviesInfoMono)
+                .assertNext(result -> assertEquals(2021, result.getYear()))
+                .verifyComplete();
+    }
+
+    @Test
+    void deleteMovieInfo() {
+        movieInfoRepository.deleteById("abc")
+                .block();
+
+        var moviesInfoFlux = movieInfoRepository.findAll()
+                .log();
+
+        StepVerifier.create(moviesInfoFlux)
+                .expectNextCount(2)
+                .verifyComplete();
+    }
 }
