@@ -25,14 +25,22 @@ public class MoviesInfoController {
     }
 
     @GetMapping("/movieinfos")
-    public Flux<MovieInfo> getAllMovieInfos(){
+    public Flux<MovieInfo> getAllMovieInfos() {
         return movieInfoService.getAllMovieInfos()
                 .log();
     }
 
     @GetMapping("/movieinfos/{id}")
-    public Mono<MovieInfo> getMovieInfoById(@PathVariable String id){
+    public Mono<MovieInfo> getMovieInfoById(@PathVariable String id) {
         return movieInfoService.getMovieInfoById(id)
+                .log();
+    }
+
+    @PutMapping("/movieinfos/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<MovieInfo> updateMovieInfo(@RequestBody MovieInfo movieInfo,
+                                           @PathVariable String id) {
+        return movieInfoService.updateMovieInfo(movieInfo, id)
                 .log();
     }
 }
