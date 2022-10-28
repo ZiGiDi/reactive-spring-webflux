@@ -14,8 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -114,5 +113,18 @@ class MoviesInfoControllerTest {
                     assertEquals("abc", updatedMovieInfo.getMovieInfoId());
                     assertEquals("Dark Knight Rises1", updatedMovieInfo.getName());
                 });
+    }
+
+    @Test
+    void deleteMovieInfo() {
+        var movieInfoId = "abc";
+
+        webTestClient.delete()
+                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
+                .exchange()
+                .expectStatus()
+                .isNoContent();
+
+        assertNull(movieInfoRepository.findById(movieInfoId).block());
     }
 }
