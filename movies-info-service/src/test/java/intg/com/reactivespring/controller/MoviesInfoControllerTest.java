@@ -127,4 +127,18 @@ class MoviesInfoControllerTest {
 
         assertNull(movieInfoRepository.findById(movieInfoId).block());
     }
+
+    @Test
+    void updateMovieInfoInvalidId() {
+        var movieInfo = new MovieInfo(null, "Dark Knight Rises1",
+                2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+        var movieInfoId = "abcd";
+
+        webTestClient.put()
+                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
 }
