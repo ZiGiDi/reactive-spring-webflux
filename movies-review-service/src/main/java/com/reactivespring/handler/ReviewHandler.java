@@ -29,4 +29,18 @@ public class ReviewHandler {
         Flux<Review> reviews = reviewReactiveRepository.findAll();
         return ServerResponse.ok().body(reviews, Review.class);
     }
+
+    public Mono<ServerResponse> updateReview(ServerRequest serverRequest) {
+        String reviewId = serverRequest.pathVariable("id");
+        Mono<Review> existingReview = reviewReactiveRepository.findById(reviewId);
+
+        return existingReview.flatMap(review -> serverRequest.bodyToMono(Review.class)
+                        .map(request -> {
+                            review.setComment(request.getComment());
+                            review.setRating(request.getRating());
+                            return review;
+                        }))
+                .flatMap(reviewReactiveRepository::save)
+                .flatMap(savedReview -> ServerResponse.ok().bodyValue(savedReview));
+    }
 }
