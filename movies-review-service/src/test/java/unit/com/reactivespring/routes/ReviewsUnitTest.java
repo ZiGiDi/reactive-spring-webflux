@@ -52,4 +52,20 @@ public class ReviewsUnitTest {
                     assertEquals("abc", savedReview.getReviewId());
                 });
     }
+
+    @Test
+    void addReview_validation() {
+        Review review = new Review(null, null, "Awesome Movie", -9.0);
+
+        Mockito.when(reviewReactiveRepository.save(isA(Review.class)))
+                .thenReturn(Mono.just(new Review("abc", 123L, "Awesome Movie", 9.0)));
+
+        webTestClient
+                .post()
+                .uri(REVIEW_URL)
+                .bodyValue(review)
+                .exchange()
+                .expectStatus()
+                .is5xxServerError();
+    }
 }
